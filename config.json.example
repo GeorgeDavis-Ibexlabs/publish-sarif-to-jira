@@ -1,0 +1,18 @@
+{
+    "input": {
+        "type": "file",
+        "format": "sarif"
+    },
+    "jira": {
+        "cloud_url": "https://XXXX.atlassian.net/",
+        "project_key": "PROJ-XYZ",
+        "auth_email": "test@example.com",
+        "api_token": "<INSERT-YOUR-JIRA-CLOUD-API-TOKEN>",
+        "default_issue_labels": [
+            "Label1",
+            "Label2"
+        ],
+        "use_atlassian_document_format": false,
+        "create_sub_tasks": false
+    }
+}
