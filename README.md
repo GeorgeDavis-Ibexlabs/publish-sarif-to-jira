@@ -1,22 +1,24 @@
 # jira-cloud-ticket-automation
- JIRA Cloud Ticketing Automation based on SARIF files
+
+Python project to push SARIF output to JIRA Cloud and track progress of personal projects in JIRA
 
 Project Status: **In Active Development**
 
 ## Prerequisites
 
-1. 
+1. Requires a JIRA Cloud account
+    - Access to the Authentication Email and API token
 
 ## Work items
 
 1. Use rich-text (Atlassian Document Format) in JIRA Issue description
 
-    > Note: This feature is gated with the config parameter `use_atlassian_document_format` in the config.json file. Set to true to use this feature.
+    > **Note**: This feature is gated with the config parameter `use_atlassian_document_format` in the config.json file. Set to true to use this feature.
     :warning: **Bug**: Atlassian does not accept ADF rich-text formatted description, rather dumps JSON in the issue description. Needs triage and bug fix.
 
 2. Create sub-tasks instead of multi-lines in the JIRA Issue description
 
-    > Note: This feature is not implemented yet and will be gated with the config parameter `create_sub_tasks` in the config.json file. Set to true to build and test this feature.
+    > **Note**: This feature is not implemented yet and will be gated with the config parameter `create_sub_tasks` in the config.json file. Set to true to build and test this feature.
 
 ## Usage
 
@@ -37,18 +39,27 @@ Project Status: **In Active Development**
 | `jira["project_key"]` | `jira_project_key` | JIRA Project Key: `PROJ-XYZ` |
 | `jira["auth_email"]` | `jira_auth_email` | Authentication Email: `test@example.com` |
 | `jira["api_token"]` | `jira_api_token` | API token: `<INSERT-YOUR-JIRA-CLOUD-API-TOKEN>` |
-| `jira["default_issue_labels"]` | `jira_default_issue_labels` | For config.json - ```["Label1","Label2"]```. For config environment variables, we use comma-separated string like `Label1,Label2` |
+| `jira["default_issue_labels"]` | `jira_default_issue_labels` | For config.json - `["Label1","Label2"]`. For config environment variables, we use comma-separated string like `Label1,Label2` |
 | `jira["use_atlassian_document_format"]` | `jira_use_atlassian_document_format` |  Unsupported yet on JIRA Cloud. Defaults to `false`. |
 | `jira["create_sub_tasks"]` | `jira_create_sub_tasks` | Placeholder. Feature yet to be developed. Defaults to `false`. |
 
+## Testing
 
-## GitHub Actions
+| Tools | Link | Status |
+|-------|------|--------|
+| `cfn-lint` | (aws-cloudformation/cfn-lint)[https://github.com/aws-cloudformation/cfn-lint] | :white_check_mark: |
+| `trivy` | (aquasecurity/trivy)[https://github.com/aquasecurity/trivy] | :white_check_mark: |
 
-:construction: Work on publishing a **GitHub Action** is in progress and should be available by end of March 2024
 
-## VSCode Extension
+## :construction: Work in progress 
 
-:construction: Plans to build this project into a VSCode extension to submit SARIF output to JIRA direct from the IDE and track progress
+- #### GitHub Actions
+
+    Working on publishing a **GitHub Action** and it should be available by end of March 2024
+
+- #### VSCode Extension
+
+    Plans to build this project into a VSCode extension to submit SARIF output to JIRA direct from the IDE and track progress
 
 ## Upcoming features
 
