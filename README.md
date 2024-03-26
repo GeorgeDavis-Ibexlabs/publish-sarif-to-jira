@@ -9,21 +9,21 @@ Project Status: **In Active Development**
 
 ## Work items
 
-1. Use rich-text (Atlassian Document Format) in JIRA Issue description.
+1. Use rich-text (Atlassian Document Format) in JIRA Issue description
 
     > Note: This feature is gated with the config parameter `use_atlassian_document_format` in the config.json file. Set to true to use this feature.
     :warning: **Bug**: Atlassian does not accept ADF rich-text formatted description, rather dumps JSON in the issue description. Needs triage and bug fix.
 
-2. Create sub-tasks instead of multi-lines in the JIRA Issue description.
+2. Create sub-tasks instead of multi-lines in the JIRA Issue description
 
     > Note: This feature is not implemented yet and will be gated with the config parameter `create_sub_tasks` in the config.json file. Set to true to build and test this feature.
 
 ## Usage
 
-1. Copy the `config.json.example` file into `config.json`.
-2. Update the configuration values, both `input` and `jira` sections of the `config.json` file.
-3. Run this Python script in a directory where the SARIF files are located.
-4. The Python script iterates through the SARIF files (files ending with .sarif extension or has the term `.sarif` in the filename) and creates JIRA Issues on your JIRA Cloud instance.
+1. Copy the `config.json.example` file into `config.json`
+2. Update the configuration values, both `input` and `jira` sections of the `config.json` file
+3. Run this Python script in a directory where the SARIF files are located
+4. The Python script iterates through the SARIF files (files ending with .sarif extension or has the term `.sarif` in the filename) and creates JIRA Issues on your JIRA Cloud instance
 
 > This script has not been tested with the self-hosted instances of JIRA
 
@@ -50,10 +50,19 @@ Project Status: **In Active Development**
 
 :construction: Plans to build this project into a VSCode extension to submit SARIF output to JIRA direct from the IDE and track progress
 
+## Upcoming features
+
+Feature requests are currently tracked by the original author within the source code. Clone this repository, run a search for the term "TODO" to find the list of new features being tracked.
+
+1. Create sub-tasks instead of multi-lines in the JIRA Issue description
+2. Fully support Atlassian Document Format (ADF). Currently, a bug is limiting the ADF from appearing formatted when visiting the JIRA Issue on JIRA Cloud 
+3. Create a JIRA Project if the project does not exist (Nice to have so it can be deployed per project all from CI/CD without the need to access JIRA Cloud)
+
 ## Contribute
 
-If you encounter a bug or think of a useful feature, or find something confusing in the docs, please create a new issue
+If you encounter a bug or think of a useful feature, or find something confusing in the docs, please create a new issue.
 
 I ♥️ pull requests. If you'd like to fix a bug or contribute to a feature or simply correct a typo, please feel free to do so.
 
 If you're thinking of adding a new feature, consider opening an issue first to discuss it to ensure it aligns with the direction of the project and potentially save yourself some time.
+
