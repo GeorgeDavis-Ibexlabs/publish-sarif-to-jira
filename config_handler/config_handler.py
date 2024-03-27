@@ -2,7 +2,7 @@ from os import environ, getcwd, listdir
 import re
 import logging
 import traceback
-from python_json_config import ConfigBuilder
+from python_json_config import ConfigBuilder, config_node
 from mergedeep import merge
 
 ConfigKeyValuePair = {
@@ -40,13 +40,9 @@ class ConfigHandler():
         self.builder = ConfigBuilder()
         self.input_type = 'file'
         self.input_format = 'sarif'
-        self.jira_cloud_url = ''
-        self.jira_project_key = ''
-        self.jira_auth_email = ''
-        self.jira_api_token = ''
+        self.jira_cloud_url = self.jira_project_key = self.jira_auth_email = self.jira_api_token = ''
         self.jira_default_issue_labels = []
-        self.jira_use_atlassian_document_format = False
-        self.jira_create_sub_tasks = False
+        self.jira_use_atlassian_document_format = self.jira_create_sub_tasks = False
         self.config = self.build_config()
 
     # Get Boolean
@@ -147,7 +143,7 @@ class ConfigHandler():
                     # self.builder.validate_field_type('config.jira.create_sub_tasks', bool)
                     
             self.logger.debug("Config from the config.json file - " + str(self.config))
-            return self.config.to_dict()
+            return self.config.to_dict() if isinstance(self.config, config_node.Config) else self.config
         
         except Exception as e:
             self.logger.error("Error loading config.json file: " + str(traceback.print_tb(e.__traceback__)))
