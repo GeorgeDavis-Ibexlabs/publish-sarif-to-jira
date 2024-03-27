@@ -1,0 +1,19 @@
+# GitHub files
+.git
+.gitignore
+.gitattributes
+README.md
+LICENSE
+action.yml
+
+# Secrets
+config.json**
+.env**
+
+# Docker files
+Dockerfile
+.dockerignore
+
+# SARIF files (for testing)
+*.sarif*
+!*.sarif.test
