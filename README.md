@@ -43,7 +43,7 @@ Project Status: **In Active Development**
 | `jira["use_atlassian_document_format"]` | `jira_use_atlassian_document_format` |  Unsupported yet on JIRA Cloud. Defaults to `false`. |
 | `jira["create_sub_tasks"]` | `jira_create_sub_tasks` | Placeholder. Feature yet to be developed. Defaults to `false`. |
 
-## Testing
+## Tool Compatibility
 
 | Tools | Link | Status |
 |-------|------|--------|
@@ -77,3 +77,18 @@ I ♥️ pull requests. If you'd like to fix a bug or contribute to a feature or
 
 If you're thinking of adding a new feature, consider opening an issue first to discuss it to ensure it aligns with the direction of the project and potentially save yourself some time.
 
+## Development
+
+```sh
+docker login
+```
+```sh
+docker build . -f Dockerfile -t github-sarif-to-jira:latest
+```
+
+```sh
+docker run --network host -itd \
+--env-file .env \
+-e LOG_LEVEL='DEBUG' \
+github-sarif-to-jira:latest
+```
