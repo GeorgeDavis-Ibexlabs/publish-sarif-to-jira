@@ -30,6 +30,7 @@ def main():
 
         # Build a config file using config.json if it exists
         configHandlerObj.config = configHandlerObj.get_combined_config(config_file=config_file, config_env=config_env)
+        logger.debug("Final Config Object - " + str(configHandlerObj.config))
 
         # JIRAPythonAutomationAPIToken
         jira = JIRA(server=configHandlerObj.config["jira"]["cloud_url"], basic_auth=(configHandlerObj.config["jira"]["auth_email"], configHandlerObj.config["jira"]["api_token"]))
@@ -110,7 +111,6 @@ def main():
                         results_counter += 1
                         if results_counter >= results_limiter:
                             break
-
                 else:
                     raise Exception("No results found.")
                 
