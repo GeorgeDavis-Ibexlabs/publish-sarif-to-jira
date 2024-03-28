@@ -7,7 +7,6 @@ from projects.projects import Projects
 from issues.issues import Issues
 from sarif_file_handler.sarif_file_handler import SARIFFileHandler
 from config_handler.config_handler import ConfigHandler
-# from config.config_parser import ConfigHandler
 from atlassian_doc_builder import load_adf, ADFDoc
 from atlassian.adf import AtlassianDocumentFormatBuilder
 
