@@ -83,7 +83,7 @@ If you're thinking of adding a new feature, consider opening an issue first to d
 docker login
 ```
 ```sh
-docker build . -f Dockerfile -t github-sarif-to-jira:latest
+docker build --no-cache --progress=plain . -f Dockerfile -t github-sarif-to-jira:latest 2>&1 | tee build.log
 ```
 
 ```sh
