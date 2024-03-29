@@ -1,9 +1,10 @@
 FROM python:3-slim
 
-COPY . /ci
+COPY . /action/workspace
 
-WORKDIR /ci
+WORKDIR /action/workspace
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT ["python3", "main.py"]
+CMD ["/action/workspace/main.py"]
+ENTRYPOINT ["python3", "-u"]
