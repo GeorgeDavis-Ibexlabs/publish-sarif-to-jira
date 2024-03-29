@@ -5,16 +5,17 @@ import traceback
 from python_json_config import ConfigBuilder, config_node
 from mergedeep import merge
 
+# The ConfigMap - Mapping between runtime environment variable keys and JSON Config keys. Will need to append 'INPUT_' when looking to map within GitHub Actions environment
 ConfigKeyValuePair = {
-    'input_type': 'input.type',
-    'input_format': 'input.format',
-    'jira_cloud_url': 'jira.cloud_url',
-    'jira_project_key': 'jira.project_key',
-    'jira_auth_email': 'jira.auth_email',
-    'jira_api_token': 'jira.api_token',
-    'jira_default_issue_labels': 'jira.default_issue_labels',
-    'jira_use_atlassian_document_format': 'jira.use_atlassian_document_format',
-    'jira_create_sub_tasks': 'jira.create_sub_tasks'
+    'INPUT_TYPE': 'input.type',
+    'INPUT_FORMAT': 'input.format',
+    'JIRA_CLOUD_URL': 'jira.cloud_url',
+    'JIRA_PROJECT_KEY': 'jira.project_key',
+    'JIRA_AUTH_EMAIL': 'jira.auth_email',
+    'JIRA_API_TOKEN': 'jira.api_token',
+    'JIRA_DEFAULT_ISSUE_LABELS': 'jira.default_issue_labels',
+    'JIRA_USE_ATLASSIAN_DOCUMENT_FORMAT': 'jira.use_atlassian_document_format',
+    'JIRA_CREATE_SUB_TASKS': 'jira.create_sub_tasks'
 }
 
 # SARIF - class to handle Static Analysis Results Interchange Format (SARIF)
@@ -102,8 +103,8 @@ class ConfigHandler():
             local_directory = getcwd()
             if 'GITHUB_ACTIONS' in environ.keys():
 
-                # self.logger.debug("Running inside GitHub Actions")
-                local_directory = environ.get("GITHUB_WORKSPACE")
+                # self.logger.debug('Running inside GitHub Actions')
+                local_directory = environ.get('GITHUB_WORKSPACE')
 
             for file in listdir(local_directory):
                 if file == 'config.json':
@@ -142,11 +143,11 @@ class ConfigHandler():
                     # self.builder.validate_field_type('config.jira.use_atlassian_document_format', bool)
                     # self.builder.validate_field_type('config.jira.create_sub_tasks', bool)
                     
-            self.logger.debug("Config from the config.json file - " + str(self.config))
+            self.logger.debug('Config from the config.json file - ' + str(self.config))
             return self.config.to_dict() if isinstance(self.config, config_node.Config) else self.config
         
         except Exception as e:
-            self.logger.error("Error loading config.json file: " + str(traceback.print_tb(e.__traceback__)))
+            self.logger.error('Error loading config.json file: ' + str(traceback.print_tb(e.__traceback__)))
 
     # Load the config.json file from environment variables instead if running inside GitHub Actions. Environment variables override config.json values to enable CI workflows.
     def load_config_env(self) -> dict:
@@ -159,49 +160,66 @@ class ConfigHandler():
                 if config_key in environ.keys():
                     temp_list.append(config_value)
 
+            self.logger.debug('ConfigMap JSON key values found within environment variables - ' + str(temp_list))
+
             unique_parent_list = []
             for item in temp_list:
                 if item.split('.')[0] not in unique_parent_list:
                     unique_parent_list.append(item.split('.')[0])
 
+            self.logger.debug('Parent config attributes found within environment variables - ' + str(unique_parent_list))
+
             for parent_item in unique_parent_list:
 
                 temp_config_dict = {}
-                for list_item in [x for x in temp_list if re.match(parent_item+".*", x)]:
+                for list_item in [x for x in temp_list if re.match(parent_item+'.*', x)]:
+
+                    if 'GITHUB_ACTIONS' in environ.keys():
+                        if environ['GITHUB_ACTIONS']:
+                            list_item = 'INPUT_' + list_item
+
+                    self.logger.debug('Config `' + str(list_item) + '` within parent `' + str(parent_item) + '` - ' + str(environ[list_item.replace('.', '_').upper()]))
+
                     item_path = list_item.split('.')
                     for item in reversed(item_path):
-                        # temp_config_dict.update({item: environ[list_item.replace('.', '_')]})
+                        # temp_config_dict.update({item: environ[list_item.replace('.', '_').upper()]})
                         # break
-                        if list_item == "jira.default_issue_labels":
-                            temp_config_dict.update({item: environ[list_item.replace('.', '_')].split(",")})
+                        if list_item == 'jira.default_issue_labels':
+                            temp_config_dict.update({
+                                item: environ[list_item.replace('.', '_').upper()].split(',')
+                            })
                         else:
                             if list_item in ['jira.use_atlassian_document_format', 'jira.create_sub_tasks']:
-                                temp_config_dict.update({item: self.get_boolean(environ[list_item.replace('.', '_')])})
+                                temp_config_dict.update({
+                                    item: self.get_boolean(environ[list_item.replace('.', '_').upper()])
+                                })
                             else:
-                                temp_config_dict.update({item: environ[list_item.replace('.', '_')]})
+                                temp_config_dict.update({
+                                    item: environ[list_item.replace('.', '_').upper()]
+                                })
                         break
                     config.update({list_item.split('.')[0]: temp_config_dict})
-            self.logger.debug("Config from environment variables - " + str(config))
+            self.logger.debug('Config from environment variables - ' + str(config))
             return config
         
         except Exception as e:
-            self.logger.error("Error loading environment variables: " + str(traceback.print_tb(e.__traceback__)))
+            self.logger.error('Error loading environment variables: ' + str(traceback.print_tb(e.__traceback__)))
         
-        # self.input_type = self.check_if_env_var_exists(env_key="input_type", existing_value=self.input_type)
-        # self.input_format = self.check_if_env_var_exists(env_key="input_format", existing_value=self.input_format)
-        # self.jira_cloud_url = self.check_if_env_var_exists(env_key="jira_cloud_url", existing_value=self.jira_cloud_url)
-        # self.jira_project_key = self.check_if_env_var_exists(env_key="jira_project_key", existing_value=self.jira_project_key)
-        # self.auth_email = self.check_if_env_var_exists(env_key="jira_auth_email", existing_value=self.auth_email)
-        # self.api_token = self.check_if_env_var_exists(env_key="jira_api_token", existing_value=self.api_token)
-        # self.default_issue_labels = self.check_if_env_var_exists(env_key="jira_default_issue_labels", existing_value=self.default_issue_labels)
-        # self.use_atlassian_document_format = self.check_if_env_var_exists(env_key="jira_use_atlassian_document_format", existing_value=self.use_atlassian_document_format)
-        # self.create_sub_tasks = self.check_if_env_var_exists(env_key="jira_create_sub_tasks", existing_value=self.create_sub_tasks)
+        # self.input_type = self.check_if_env_var_exists(env_key='input_type', existing_value=self.input_type)
+        # self.input_format = self.check_if_env_var_exists(env_key='input_format', existing_value=self.input_format)
+        # self.jira_cloud_url = self.check_if_env_var_exists(env_key='jira_cloud_url', existing_value=self.jira_cloud_url)
+        # self.jira_project_key = self.check_if_env_var_exists(env_key='jira_project_key', existing_value=self.jira_project_key)
+        # self.auth_email = self.check_if_env_var_exists(env_key='jira_auth_email', existing_value=self.auth_email)
+        # self.api_token = self.check_if_env_var_exists(env_key='jira_api_token', existing_value=self.api_token)
+        # self.default_issue_labels = self.check_if_env_var_exists(env_key='jira_default_issue_labels', existing_value=self.default_issue_labels)
+        # self.use_atlassian_document_format = self.check_if_env_var_exists(env_key='jira_use_atlassian_document_format', existing_value=self.use_atlassian_document_format)
+        # self.create_sub_tasks = self.check_if_env_var_exists(env_key='jira_create_sub_tasks', existing_value=self.create_sub_tasks)
             
     def get_combined_config(self, config_file: dict, config_env: dict) -> dict:
 
         try:
             # merged_config = config_env | config_file
-            # self.logger.debug("Final Config Object - " + str(merged_config))
+            # self.logger.debug('Final Config Object - ' + str(merged_config))
             # return merged_config
 
             # for k in set(config_file.keys()).union(config_env.keys()):
@@ -221,5 +239,5 @@ class ConfigHandler():
             return merge(config_file, config_env)
 
         except Exception as e:
-            self.logger.error("Error merging config: " + str(traceback.print_tb(e.__traceback__)))
+            self.logger.error('Error merging config: ' + str(traceback.print_tb(e.__traceback__)))
         
