@@ -47,8 +47,8 @@ Project Status: **In Active Development**
 
 | Tools | Link | Status |
 |-------|------|--------|
-| `cfn-lint` | (aws-cloudformation/cfn-lint)[https://github.com/aws-cloudformation/cfn-lint] | :white_check_mark: |
-| `trivy` | (aquasecurity/trivy)[https://github.com/aquasecurity/trivy] | :white_check_mark: |
+| `cfn-lint` | [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint) | :white_check_mark: |
+| `trivy` | [aquasecurity/trivy](https://github.com/aquasecurity/trivy) | :white_check_mark: |
 
 
 ## :construction: Work in progress 
@@ -82,6 +82,7 @@ If you're thinking of adding a new feature, consider opening an issue first to d
 ```sh
 docker login
 ```
+
 ```sh
 docker build --no-cache --progress=plain . -f Dockerfile -t github-sarif-to-jira:latest 2>&1 | tee build.log
 ```
