@@ -17,6 +17,7 @@ logger.setLevel(environ['LOG_LEVEL'] if 'LOG_LEVEL' in environ.keys() else 'INFO
 def main():
 
     try:
+        logger.debug("Environment variables - " + str(environ))
         configHandlerObj = ConfigHandler(logger=logger)
 
         # Build a config file using config.json if it exists
