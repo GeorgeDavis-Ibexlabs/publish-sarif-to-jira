@@ -157,7 +157,13 @@ class ConfigHandler():
 
             temp_list = []
             for config_key, config_value in ConfigKeyValuePair.items():
+        
+                if 'GITHUB_ACTIONS' in environ.keys():
+                        if environ['GITHUB_ACTIONS']:
+                            config_key = 'INPUT_' + config_key
+
                 if config_key in environ.keys():
+                    self.logger.debug('Config found within environment variables - ' + str(config_key) + ' - ' + str(config_value))
                     temp_list.append(config_value)
 
             self.logger.debug('ConfigMap JSON key values found within environment variables - ' + str(temp_list))
@@ -184,21 +190,39 @@ class ConfigHandler():
                     for item in reversed(item_path):
                         # temp_config_dict.update({item: environ[list_item.replace('.', '_').upper()]})
                         # break
-                        if list_item == 'jira.default_issue_labels':
-                            temp_config_dict.update({
-                                item: environ[list_item.replace('.', '_').upper()].split(',')
-                            })
+                        if 'GITHUB_ACTIONS' in environ.keys():
+                            if environ['GITHUB_ACTIONS']:
+                                if list_item == 'INPUT_jira.default_issue_labels':
+                                    temp_config_dict.update({
+                                        item: environ[list_item.replace('.', '_').upper()].split(',')
+                                    })
+                                else:
+                                    if list_item in ['INPUT_jira.use_atlassian_document_format', 'INPUT_jira.create_sub_tasks']:
+                                        temp_config_dict.update({
+                                            item: self.get_boolean(environ[list_item.replace('.', '_').upper()])
+                                        })
+                                    else:
+                                        temp_config_dict.update({
+                                            item: environ[list_item.replace('.', '_').upper()]
+                                        })
+                                config.update({list_item.split('.')[0].replace('INPUT_',''): temp_config_dict})
+                                break
                         else:
-                            if list_item in ['jira.use_atlassian_document_format', 'jira.create_sub_tasks']:
+                            if list_item == 'jira.default_issue_labels':
                                 temp_config_dict.update({
-                                    item: self.get_boolean(environ[list_item.replace('.', '_').upper()])
+                                    item: environ[list_item.replace('.', '_').upper()].split(',')
                                 })
                             else:
-                                temp_config_dict.update({
-                                    item: environ[list_item.replace('.', '_').upper()]
-                                })
-                        break
-                    config.update({list_item.split('.')[0]: temp_config_dict})
+                                if list_item in ['jira.use_atlassian_document_format', 'jira.create_sub_tasks']:
+                                    temp_config_dict.update({
+                                        item: self.get_boolean(environ[list_item.replace('.', '_').upper()])
+                                    })
+                                else:
+                                    temp_config_dict.update({
+                                        item: environ[list_item.replace('.', '_').upper()]
+                                    })
+                            config.update({list_item.split('.')[0]: temp_config_dict})
+                            break
             self.logger.debug('Config from environment variables - ' + str(config))
             return config
         
