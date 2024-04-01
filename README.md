@@ -1,4 +1,4 @@
-# jira-cloud-ticket-automation
+# publish-sarif-to-jira
 
 Python project to push SARIF output to JIRA Cloud and track progress of personal projects in JIRA
 
