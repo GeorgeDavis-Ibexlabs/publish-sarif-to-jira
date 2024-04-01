@@ -12,9 +12,9 @@ name: Publish Docker image
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ "main", "github-ci" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "github-ci" ]
 
 jobs:
   push_to_registry:
