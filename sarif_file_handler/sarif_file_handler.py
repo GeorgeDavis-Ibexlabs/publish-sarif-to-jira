@@ -5,7 +5,7 @@ import os
 # SARIF - class to handle Static Analysis Results Interchange Format (SARIF)
 class SARIFFileHandler:
 
-    # Projects Constructor
+    # SARIFFileHandler Constructor
     # logger: Logger object
     #
     # Returns: SARIFFileHandler object

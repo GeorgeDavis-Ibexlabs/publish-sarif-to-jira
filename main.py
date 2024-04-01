@@ -7,7 +7,6 @@ from projects.projects import Projects
 from issues.issues import Issues
 from sarif_file_handler.sarif_file_handler import SARIFFileHandler
 from config_handler.config_handler import ConfigHandler
-# from config.config_parser import ConfigHandler
 from atlassian_doc_builder import load_adf, ADFDoc
 from atlassian.adf import AtlassianDocumentFormatBuilder
 
@@ -18,6 +17,7 @@ logger.setLevel(environ['LOG_LEVEL'] if 'LOG_LEVEL' in environ.keys() else 'INFO
 def main():
 
     try:
+        logger.debug("Environment variables - " + str(environ))
         configHandlerObj = ConfigHandler(logger=logger)
 
         # Build a config file using config.json if it exists
@@ -32,8 +32,12 @@ def main():
         configHandlerObj.config = configHandlerObj.get_combined_config(config_file=config_file, config_env=config_env)
         logger.debug("Final Config Object - " + str(configHandlerObj.config))
 
-        # JIRAPythonAutomationAPIToken
-        jira = JIRA(server=configHandlerObj.config["jira"]["cloud_url"], basic_auth=(configHandlerObj.config["jira"]["auth_email"], configHandlerObj.config["jira"]["api_token"]))
+        # Create a JIRA Object
+        jira = JIRA(
+            server=configHandlerObj.config["jira"]["cloud_url"],
+            basic_auth=(configHandlerObj.config["jira"]["auth_email"],
+            configHandlerObj.config["jira"]["api_token"])
+        )
 
         # Create an Projects Object
         projectsObj = Projects(jira_credentials=jira, logger=logger)
@@ -65,16 +69,14 @@ def main():
 
                     # Create an Issues Object
                     issueObj = Issues(
+                        logger=logger,
                         jira_credentials=jira,
                         project_key=configHandlerObj.config["jira"]["project_key"],
                         project_id=project_info[1],
                         email_domain="@" + str(configHandlerObj.config["jira"]["auth_email"].split('@')[1]),
                         default_issue_labels=configHandlerObj.config["jira"]["default_issue_labels"],
-                        logger=logger
                     )
 
-                    results_counter = 0
-                    results_limiter = 2
                     for sarif_per_file_key in sarif_findings.keys():
 
                         logger.info("[" + sarif_tool_name + "]: " + str(sarif_findings[sarif_per_file_key]))
@@ -107,10 +109,6 @@ def main():
                             issue_desc = issue_desc,
                             issue_type = "Task"
                         )
-
-                        results_counter += 1
-                        if results_counter >= results_limiter:
-                            break
                 else:
                     raise Exception("No results found.")
                 

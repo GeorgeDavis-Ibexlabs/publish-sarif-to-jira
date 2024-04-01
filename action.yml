@@ -1,0 +1,43 @@
+---
+name: 'Create JIRA tickets from SARIF'
+description: 'Create JIRA tickets from SARIF'
+author: 'GeorgeDavis-Ibexlabs'
+inputs:
+  input_type:
+    description: 'SARIF ingest type'  
+    required: false
+    default: 'file'
+  input_format:
+    description: 'SARIF ingest format'
+    required: false
+    default: 'sarif'
+  jira_cloud_url:
+    description: 'JIRA Cloud URL'
+    required: true
+  jira_project_key:
+    description: 'JIRA Cloud Project key'
+    required: true
+  jira_auth_email:
+    description: 'JIRA Cloud Authentication email'
+    required: true
+  jira_api_token:
+    description: 'JIRA Cloud API key'
+    required: true
+  jira_default_issue_labels:
+    description: 'Comma-separated labels that would be tagged on all issues created by the Python script'
+    required: false
+    default: ''
+  jira_use_atlassian_document_format:
+    description: 'Set true or false to use Atlassian Document Format (ADF)'
+    required: false
+    default: 'false'
+  jira_create_sub_tasks:
+    description: 'Set true or false to create sub-tasks'
+    required: false
+    default: 'false'
+branding:
+  icon: 'file-plus'
+  color: 'purple'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
