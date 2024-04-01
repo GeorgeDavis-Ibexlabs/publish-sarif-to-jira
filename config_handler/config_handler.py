@@ -66,35 +66,7 @@ class ConfigHandler():
                 'use_atlassian_document_format': self.jira_use_atlassian_document_format if isinstance(self.jira_use_atlassian_document_format, bool) else self.get_boolean(self.jira_use_atlassian_document_format),
                 'create_sub_tasks': self.jira_create_sub_tasks if isinstance(self.jira_create_sub_tasks, bool) else self.get_boolean(self.jira_create_sub_tasks)
             }
-        } 
-    
-    # # If JSON config variable exists
-    # def check_if_json_key_value_exists(self, key: str, config: dict, existing_value):
-
-    #     if key in config.keys(): # Only works for flat JSON files
-    #         if key != 'default_issue_labels':
-    #             return config[key]
-    #         else:
-    #             if environ[key] == '':
-    #                 return []
-    #             else:
-    #                 environ[key].split(',')
-    #     else:
-    #         return existing_value
-    
-    # # If environment variable exists
-    # def check_if_env_var_exists(self, env_key: str, existing_value):
-
-    #     if env_key in environ:
-    #         if env_key != 'default_issue_labels':
-    #             return environ[env_key]
-    #         else:
-    #             if environ[env_key] == '':
-    #                 return []
-    #             else:
-    #                 environ[env_key].split(',')
-    #     else:
-    #         return existing_value
+        }
 
     # Load the config.json file from the current working directory, or from the GITHUB_WORKSPACE environment variable if running inside GitHub Actions
     def load_config_file(self) -> dict:
@@ -132,16 +104,6 @@ class ConfigHandler():
 
                     if self.config.jira.create_sub_tasks == None:
                         self.config.jira.create_sub_tasks = False # Default is false
-
-                    # self.builder.validate_field_type('config.input.type', str)
-                    # self.builder.validate_field_type('config.input.format', str)
-                    # self.builder.validate_field_type('config.jira.cloud_url', str)
-                    # self.builder.validate_field_type('config.jira.project_key', str)
-                    # self.builder.validate_field_type('config.jira.auth_email', int)
-                    # self.builder.validate_field_type('config.jira.api_token', str)
-                    # self.builder.validate_field_type('config.jira.default_issue_labels', list)
-                    # self.builder.validate_field_type('config.jira.use_atlassian_document_format', bool)
-                    # self.builder.validate_field_type('config.jira.create_sub_tasks', bool)
                     
             self.logger.debug('Config from the config.json file - ' + str(self.config))
             return self.config.to_dict() if isinstance(self.config, config_node.Config) else self.config
@@ -228,38 +190,10 @@ class ConfigHandler():
         
         except Exception as e:
             self.logger.error('Error loading environment variables: ' + str(traceback.print_tb(e.__traceback__)))
-        
-        # self.input_type = self.check_if_env_var_exists(env_key='input_type', existing_value=self.input_type)
-        # self.input_format = self.check_if_env_var_exists(env_key='input_format', existing_value=self.input_format)
-        # self.jira_cloud_url = self.check_if_env_var_exists(env_key='jira_cloud_url', existing_value=self.jira_cloud_url)
-        # self.jira_project_key = self.check_if_env_var_exists(env_key='jira_project_key', existing_value=self.jira_project_key)
-        # self.auth_email = self.check_if_env_var_exists(env_key='jira_auth_email', existing_value=self.auth_email)
-        # self.api_token = self.check_if_env_var_exists(env_key='jira_api_token', existing_value=self.api_token)
-        # self.default_issue_labels = self.check_if_env_var_exists(env_key='jira_default_issue_labels', existing_value=self.default_issue_labels)
-        # self.use_atlassian_document_format = self.check_if_env_var_exists(env_key='jira_use_atlassian_document_format', existing_value=self.use_atlassian_document_format)
-        # self.create_sub_tasks = self.check_if_env_var_exists(env_key='jira_create_sub_tasks', existing_value=self.create_sub_tasks)
             
     def get_combined_config(self, config_file: dict, config_env: dict) -> dict:
 
         try:
-            # merged_config = config_env | config_file
-            # self.logger.debug('Final Config Object - ' + str(merged_config))
-            # return merged_config
-
-            # for k in set(config_file.keys()).union(config_env.keys()):
-            #     if k in config_file and k in config_env:
-            #         if isinstance(config_file[k], dict) and isinstance(config_env[k], dict):
-            #             yield (k, dict(self.get_combined_config(config_file[k], config_env[k])))
-            #         else:
-            #             # If one of the values is not a dict, you can't continue merging it.
-            #             # Value from second dict overrides one in first and we move on.
-            #             yield (k, config_env[k])
-            #             # Alternatively, replace this with exception raiser to alert you of value conflicts
-            #     elif k in config_file:
-            #         yield (k, config_file[k])
-            #     else:
-            #         yield (k, config_env[k])
-
             return merge(config_file, config_env)
 
         except Exception as e:
