@@ -60,7 +60,7 @@ Project Status: **In Active Development**
 ```
 Refer to [Create JIRA tickets from SARIF using GitHub Actions](https://github.com/marketplace/actions/create-jira-tickets-from-sarif)
 
-## :construction: Work in progress 
+## Work in progress 
 
 - #### VSCode Extension
 
