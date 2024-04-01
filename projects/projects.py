@@ -46,7 +46,6 @@ class Projects:
         self.logger.debug("List of ALL Issue Types for Project ID " + project_id + " - " + str(issue_types_list))
 
         return issue_types_list
-        
 
     def get_project_issue_type_by_name(self, project_id: str, issue_type_name: str):
 
