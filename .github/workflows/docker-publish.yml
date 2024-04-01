@@ -53,3 +53,4 @@ jobs:
             repository: georgedavisibexlabs/publish-sarif-to-jira
             short-description: Publish SARIF data to JIRA
             readme-filepath: ./DOCKER.md
+            enable-url-completion: true
