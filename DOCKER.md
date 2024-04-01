@@ -22,10 +22,12 @@ Project Status: **In Active Development**
 
 ## Usage
 
-1. Copy the `config.json.example` file into `config.json`
-2. Update the configuration values, both `input` and `jira` sections of the `config.json` file
-3. Run this Python script in a directory where the SARIF files are located
-4. The Python script iterates through the SARIF files (files ending with `.sarif` extension or has the term `.sarif` in the filename) and creates JIRA Issues on your JIRA Cloud instance
+1. Copy the `.env.example` file into `.env`
+2. Update the configuration values, both `input` and `jira` values on the `.env` file
+3. Run Docker container using
+`docker run --network host -itd --env-file .env publish-sarif-to-jira:main`
+
+4. The Python script within the Docker container iterates through the SARIF files (files ending with `.sarif` extension or has the term `.sarif` in the filename) and creates JIRA Issues on your JIRA Cloud instance
 
 > This script has not been tested with the self-hosted instances of JIRA
 
@@ -50,12 +52,15 @@ Project Status: **In Active Development**
 | `cfn-lint` | [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint) | :white_check_mark: |
 | `trivy` | [aquasecurity/trivy](https://github.com/aquasecurity/trivy) | :white_check_mark: |
 
+## GitHub Actions
+
+```
+    - name: Create JIRA tickets from SARIF
+      uses: GeorgeDavis-Ibexlabs/publish-sarif-to-jira@v0.0.6
+```
+Refer to [Create JIRA tickets from SARIF using GitHub Actions](https://github.com/marketplace/actions/create-jira-tickets-from-sarif)
 
 ## :construction: Work in progress 
-
-- #### GitHub Actions
-
-    Working on publishing a **GitHub Action** and it should be available by end of March 2024
 
 - #### VSCode Extension
 

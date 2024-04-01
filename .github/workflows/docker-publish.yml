@@ -51,3 +51,5 @@ jobs:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
             repository: georgedavisibexlabs/publish-sarif-to-jira
+            short-description: Publish SARIF data to JIRA
+            readme-filepath: ./DOCKER.md
