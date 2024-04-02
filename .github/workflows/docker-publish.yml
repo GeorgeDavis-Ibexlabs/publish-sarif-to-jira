@@ -12,9 +12,9 @@ name: Publish Docker image
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main", "github-ci" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "github-ci" ]
+    branches: [ "main" ]
 
 jobs:
   push_to_registry:
@@ -40,7 +40,17 @@ jobs:
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: .
-          file: ./Dockerfile
+          file: Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+            repository: georgedavisibexlabs/publish-sarif-to-jira
+            short-description: Publish SARIF data to JIRA
+            readme-filepath: ./DOCKER.md
+            enable-url-completion: true

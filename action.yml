@@ -1,6 +1,6 @@
 ---
-name: 'Create JIRA tickets from SARIF'
-description: 'Create JIRA tickets from SARIF'
+name: 'Publish SARIF to JIRA'
+description: 'Create JIRA issues from SARIF data'
 author: 'GeorgeDavis-Ibexlabs'
 inputs:
   input_type:
@@ -40,4 +40,4 @@ branding:
   color: 'purple'
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'georgedavisibexlabs/publish-sarif-to-jira:main'
