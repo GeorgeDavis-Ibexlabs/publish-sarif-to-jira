@@ -14,7 +14,7 @@ Project Status: **In Active Development**
 1. Use rich-text (Atlassian Document Format) in JIRA Issue description
 
     > **Note**: This feature is gated with the config parameter `use_atlassian_document_format` in the config.json file. Set to true to use this feature.
-    :warning: **Bug**: Atlassian does not accept ADF rich-text formatted description, rather dumps JSON in the issue description. Needs triage and bug fix.
+    **Bug**: Atlassian does not accept ADF rich-text formatted description, rather dumps JSON in the issue description. Needs triage and bug fix.
 
 2. Create sub-tasks instead of multi-lines in the JIRA Issue description
 
@@ -49,8 +49,8 @@ Project Status: **In Active Development**
 
 | Tools | Link | Status |
 |-------|------|--------|
-| `cfn-lint` | [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint) | :white_check_mark: |
-| `trivy` | [aquasecurity/trivy](https://github.com/aquasecurity/trivy) | :white_check_mark: |
+| `cfn-lint` | [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint) | √ |
+| `trivy` | [aquasecurity/trivy](https://github.com/aquasecurity/trivy) | √ |
 
 ## GitHub Actions
 
@@ -89,12 +89,12 @@ docker login
 ```
 
 ```sh
-docker build --no-cache --progress=plain . -f Dockerfile -t github-sarif-to-jira:latest 2>&1 | tee build.log
+docker build --no-cache --progress=plain . -f Dockerfile -t publish-sarif-to-jira:main 2>&1 | tee build.log
 ```
 
 ```sh
 docker run --network host -itd \
 --env-file .env \
 -e LOG_LEVEL='DEBUG' \
-github-sarif-to-jira:latest
+publish-sarif-to-jira:main
 ```

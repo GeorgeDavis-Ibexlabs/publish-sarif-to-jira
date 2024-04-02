@@ -84,12 +84,12 @@ docker login
 ```
 
 ```sh
-docker build --no-cache --progress=plain . -f Dockerfile -t github-sarif-to-jira:latest 2>&1 | tee build.log
+docker build --no-cache --progress=plain . -f Dockerfile -t publish-sarif-to-jira:main 2>&1 | tee build.log
 ```
 
 ```sh
 docker run --network host -itd \
 --env-file .env \
 -e LOG_LEVEL='DEBUG' \
-github-sarif-to-jira:latest
+publish-sarif-to-jira:main
 ```
