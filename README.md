@@ -50,12 +50,15 @@ Project Status: **In Active Development**
 | `cfn-lint` | [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint) | :white_check_mark: |
 | `trivy` | [aquasecurity/trivy](https://github.com/aquasecurity/trivy) | :white_check_mark: |
 
+## GitHub Actions
+
+```
+    - name: Create JIRA tickets from SARIF
+      uses: GeorgeDavis-Ibexlabs/publish-sarif-to-jira@v0.0.6
+```
+Refer to [Create JIRA tickets from SARIF using GitHub Actions](https://github.com/marketplace/actions/create-jira-tickets-from-sarif)
 
 ## :construction: Work in progress 
-
-- #### GitHub Actions
-
-    Working on publishing a **GitHub Action** and it should be available by end of March 2024
 
 - #### VSCode Extension
 
