@@ -40,4 +40,4 @@ branding:
   color: 'purple'
 runs:
   using: 'docker'
-  image: 'georgedavisibexlabs/publish-sarif-to-jira:main'
+  image: 'georgedavisibexlabs/publish-sarif-to-jira:latest'

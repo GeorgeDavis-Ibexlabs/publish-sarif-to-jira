@@ -25,7 +25,7 @@ Project Status: **In Active Development**
 1. Copy the `.env.example` file into `.env`
 2. Update the configuration values, both `input` and `jira` values on the `.env` file
 3. Run Docker container using
-`docker run --network host -itd --env-file .env publish-sarif-to-jira:main`
+`docker run --network host -itd --env-file .env publish-sarif-to-jira:latest`
 
 4. The Python script within the Docker container iterates through the SARIF files (files ending with `.sarif` extension or has the term `.sarif` in the filename) and creates JIRA Issues on your JIRA Cloud instance
 
@@ -89,12 +89,12 @@ docker login
 ```
 
 ```sh
-docker build --no-cache --progress=plain . -f Dockerfile -t publish-sarif-to-jira:main 2>&1 | tee build.log
+docker build --no-cache --progress=plain . -f Dockerfile -t publish-sarif-to-jira:latest 2>&1 | tee build.log
 ```
 
 ```sh
 docker run --network host -itd \
 --env-file .env \
 -e LOG_LEVEL='DEBUG' \
-publish-sarif-to-jira:main
+publish-sarif-to-jira:latest
 ```
