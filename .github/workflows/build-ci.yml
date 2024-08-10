@@ -58,8 +58,11 @@ jobs:
           path: trivy-dependency-results.sbom.json
           retention-days: 30
 
-      - name: List Docker Images
+      - name: List Docker Containers
         run: 'docker ps -a'
+
+      - name: List Docker Images
+        run: 'docker images'
 
       # - name: Run Trivy Image scanner
       #   uses: aquasecurity/trivy-action@0.24.0
