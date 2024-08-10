@@ -30,13 +30,16 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v4.1.7
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker image
         uses: docker/build-push-action@v6.6.1
         with:
           context: .
           file: Dockerfile
           push: false
-          sbom: true
+          # sbom: true
           tags: georgedavisibexlabs/publish-sarif-to-jira:build
 
       - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
