@@ -1,0 +1,19 @@
+timeout: 10m
+format: sarif
+# dependency-tree: true # dependency-tree: true, can be used only with "format: table"
+# list-all-pkgs: true # list-all-pkgs: true, is only valid for the JSON format, for other formats a list of packages is automatically included.
+# exit-code: 1
+output: trivy-image-scan-results.sarif
+severity:
+    - HIGH
+    - CRITICAL
+    - MEDIUM
+    - LOW
+    - UNKNOWN
+scan:
+    scanners:
+        - vuln
+        - secret
+        - misconfig
+    ignore-unfixed: false
+    hide-progress: false
