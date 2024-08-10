@@ -58,22 +58,25 @@ jobs:
           path: trivy-dependency-results.sbom.json
           retention-days: 30
 
-      - name: Run Trivy Image scanner
-        uses: aquasecurity/trivy-action@0.24.0
-        with:
-          scan-type: 'image'
-          image-ref: 'georgedavisibexlabs/publish-sarif-to-jira:build'
-          limit-severities-for-sarif: true
-          trivy-config: .github/config/trivy-sarif.yaml
+      - name: List Docker Images
+        run: 'docker ps -a'
 
-      - name: Upload Trivy Image scan results
-        uses: actions/upload-artifact@v4.3.6
-        with:
-          name: trivy-image-scan-results
-          path: trivy-image-scan-results.sarif
-          retention-days: 30
+      # - name: Run Trivy Image scanner
+      #   uses: aquasecurity/trivy-action@0.24.0
+      #   with:
+      #     scan-type: 'image'
+      #     image-ref: 'georgedavisibexlabs/publish-sarif-to-jira'
+      #     limit-severities-for-sarif: true
+      #     trivy-config: .github/config/trivy-sarif.yaml
+    
+      # - name: Upload Trivy Image scan results
+      #   uses: actions/upload-artifact@v4.3.6
+      #   with:
+      #     name: trivy-image-scan-results
+      #     path: trivy-image-scan-results.sarif
+      #     retention-days: 30
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-image-scan-results.sarif'
+      # - name: Upload Trivy scan results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: 'trivy-image-scan-results.sarif'
