@@ -75,7 +75,7 @@ class ConfigHandler():
             local_directory = getcwd()
             if 'GITHUB_ACTIONS' in environ.keys():
 
-                # self.logger.debug('Running inside GitHub Actions')
+                self.logger.debug('Running inside GitHub Actions')
                 local_directory = environ.get('GITHUB_WORKSPACE')
 
             for file in listdir(local_directory):
