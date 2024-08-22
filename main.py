@@ -9,6 +9,7 @@ from sarif_file_handler.sarif_file_handler import SARIFFileHandler
 from config_handler.config_handler import ConfigHandler
 from atlassian_doc_builder import load_adf, ADFDoc
 from atlassian.adf import AtlassianDocumentFormatBuilder
+from utils.utils import Utils
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ def main():
     try:
         logger.debug("Environment variables - " + str(environ))
         configHandlerObj = ConfigHandler(logger=logger)
+        utilsObj = Utils(logger=logger)
 
         # Build a config file using config.json if it exists
         config_file = configHandlerObj.load_config_file()
@@ -28,7 +30,7 @@ def main():
         config_env = configHandlerObj.load_config_env()
         logger.debug("Config Env Object - " + str(config_env))
 
-        # Build a config file using config.json if it exists
+        # Merge both config objects
         configHandlerObj.config = configHandlerObj.get_combined_config(config_file=config_file, config_env=config_env)
         logger.debug("Final Config Object - " + str(configHandlerObj.config))
 
@@ -47,7 +49,7 @@ def main():
 
         if project_info[0]:
 
-            sarifObj = SARIFFileHandler(logger=logger)
+            sarifObj = SARIFFileHandler(logger=logger, utils=utilsObj)
             sarif_files_list = sarifObj.check_for_sarif_files_in_project_root_directory()
 
             # Iterate through the SARIF results file in the project root directory that ends with .sarif or contains the term ".sarif" in the filename
@@ -87,21 +89,31 @@ def main():
 
                         if configHandlerObj.config["jira"]["use_atlassian_document_format"]:
                             # Build an Atlassian Document Format
-                            adf_builder = AtlassianDocumentFormatBuilder(logger=logger)    
-
-                            # logger.debug(str(type(sarif_findings[sarif_per_file_key])))
-                            # logger.debug(str(sarif_findings[sarif_per_file_key]))
+                            adf_builder = AtlassianDocumentFormatBuilder(logger=logger)
 
                             issue_summary, issue_desc = adf_builder.build_atlassian_document_format_from_dict(sarif_tool_name=sarif_tool_name, key=sarif_per_file_key, results=sarif_findings[sarif_per_file_key])
                         else:
                             issue_summary = sarif_per_file_key
 
                             for issue in sarif_findings[sarif_per_file_key]:
+
+                                logger.debug(str(issue))
+
+                                if issue_desc != '':
+                                    issue_desc = utilsObj.serialize_finding_attributes(
+                                        finding_file_key = sarif_per_file_key,
+                                        findings = issue
+                                    ) + "\n___\n\n" 
+                                else:
+                                    issue_desc += utilsObj.serialize_finding_attributes(
+                                        finding_file_key = sarif_per_file_key,
+                                        findings = issue
+                                    ) + "\n___\n\n" 
                                 
-                                issue_desc += "[" + sarif_tool_name + "] " + issue["ruleId"] + ": " + issue["message"] + " - " + sarif_per_file_key + "\nStart Line #: " + str(issue["startLine"]) + ", character " + str(issue["startColumn"]) + "\nEnd Line #: " + str(issue["endLine"]) + ", character " + str(issue["endColumn"]) + "\n___\n\n"
+                                # issue_desc += "[" + sarif_tool_name + "] " + issue["ruleId"] + ": " + issue["message"] + " - " + sarif_per_file_key + "\nStart Line #: " + str(issue["startLine"]) + ", character " + str(issue["startColumn"]) + "\nEnd Line #: " + str(issue["endLine"]) + ", character " + str(issue["endColumn"]) + "\n___\n\n"                
 
                         logger.debug("JIRA Issue Summary: " + str(issue_summary))
-                        logger.debug("JIRA Issue Description: " + str(issue_desc.validate()) if isinstance(issue_desc, ADFDoc) else str(issue_desc))
+                        logger.debug("JIRA Issue Description: %s", str(issue_desc.validate()) if isinstance(issue_desc, ADFDoc) else issue_desc)
 
                         # Update or Insert a JIRA issue. If the issue exists, then update it. If the issue doesn't exist, then create a new issue.
                         issueObj.upsert_jira_issue(
@@ -119,6 +131,7 @@ def main():
 
     except Exception as e:
         logger.error("Error. Exception: " + str(traceback.print_tb(e.__traceback__)))
+        exit(1)
 
 if __name__ == "__main__":
     main()
