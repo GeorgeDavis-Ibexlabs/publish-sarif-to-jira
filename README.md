@@ -47,8 +47,9 @@ Project Status: **In Active Development**
 
 | Tools | Link | Status |
 |-------|------|--------|
-| `cfn-lint` | [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint) | :white_check_mark: |
-| `trivy` | [aquasecurity/trivy](https://github.com/aquasecurity/trivy) | :white_check_mark: |
+| `cfn-lint` | :octocat: [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint) | :white_check_mark: |
+| `trivy` | :octocat: [aquasecurity/trivy](https://github.com/aquasecurity/trivy) | :white_check_mark: |
+| `checkov` | :octocat: [bridgecrewio/checkov](https://github.com/bridgecrewio/checkov) | :white_check_mark: |
 
 ## GitHub Actions
 
