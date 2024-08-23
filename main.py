@@ -103,14 +103,14 @@ def main():
                                     issue_desc = utilsObj.serialize_finding_attributes(
                                         finding_file_key = sarif_per_file_key,
                                         findings = issue
-                                    ) + "\n___\n\n" 
+                                    ) + "\n___\n" 
                                 else:
                                     issue_desc += utilsObj.serialize_finding_attributes(
                                         finding_file_key = sarif_per_file_key,
                                         findings = issue
-                                    ) + "\n___\n\n" 
+                                    ) + "\n___\n" 
                                 
-                                # issue_desc += "[" + sarif_tool_name + "] " + issue["ruleId"] + ": " + issue["message"] + " - " + sarif_per_file_key + "\nStart Line #: " + str(issue["startLine"]) + ", character " + str(issue["startColumn"]) + "\nEnd Line #: " + str(issue["endLine"]) + ", character " + str(issue["endColumn"]) + "\n___\n\n"                
+                                # issue_desc += "[" + sarif_tool_name + "] " + issue["ruleId"] + ": " + issue["message"] + " - " + sarif_per_file_key + "\nStart Line #: " + str(issue["startLine"]) + ", character " + str(issue["startColumn"]) + "\nEnd Line #: " + str(issue["endLine"]) + ", character " + str(issue["endColumn"]) + "\n___\n"                
 
                         logger.debug("JIRA Issue Summary: " + str(issue_summary))
                         logger.debug("JIRA Issue Description: %s", str(issue_desc.validate()) if isinstance(issue_desc, ADFDoc) else issue_desc)

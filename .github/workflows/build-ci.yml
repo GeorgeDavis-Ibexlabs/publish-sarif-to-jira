@@ -42,7 +42,6 @@ jobs:
             .env.example
             .gitattributes
             .gitignore
-            config.json
             config.json.example
             **.md
             LICENSE
