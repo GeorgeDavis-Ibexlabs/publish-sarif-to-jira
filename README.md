@@ -55,7 +55,7 @@ Project Status: **In Active Development**
 
 ```
     - name: Create JIRA tickets from SARIF
-      uses: GeorgeDavis-Ibexlabs/publish-sarif-to-jira@v0.0.9
+      uses: GeorgeDavis-Ibexlabs/publish-sarif-to-jira@v0.0.10
 ```
 Refer to [Create JIRA tickets from SARIF using GitHub Actions](https://github.com/marketplace/actions/create-jira-tickets-from-sarif)
 
