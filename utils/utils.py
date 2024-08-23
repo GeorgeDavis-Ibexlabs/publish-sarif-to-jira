@@ -27,12 +27,12 @@ class Utils:
                 result_str = findings[attribute] + ': ' + result_str
 
             if attribute == "message":
-                result_str += findings[attribute] + ' - ' + finding_file_key
+                result_str += findings[attribute] + ' - ' + finding_file_key + "\n"
 
         for attribute in findings.keys():
 
             if attribute not in [ "ruleId", "message" ]:
-                result_str += ", " + attribute + ' = ' + str(findings[attribute]) + ", "
+                result_str += attribute + ' = ' + str(findings[attribute]) + "\n"
 
         if result_str[-2:] == ', ':
             return result_str[:-2]
