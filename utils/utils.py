@@ -34,6 +34,7 @@ class Utils:
             if attribute not in [ "ruleId", "message" ]:
                 result_str += attribute + ' = ' + str(findings[attribute]) + "\n"
 
-        if result_str[-2:] == ', ':
-            return result_str[:-2]
+        if result_str[-1:] == '\n':
+            return result_str[:-1]
+        
         return result_str
