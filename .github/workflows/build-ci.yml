@@ -30,10 +30,36 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v4.1.7
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44.5.7
+        with:
+          files_ignore: |
+            .github/**            
+            .dockerignore
+            .env
+            .env.example
+            .gitattributes
+            .gitignore
+            config.json
+            config.json.example
+            **.md
+            LICENSE
+
+      - name: List all changed files
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          for file in ${ALL_CHANGED_FILES}; do
+            echo "$file was changed"
+          done
+
       - name: Set up Docker Buildx
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: docker/build-push-action@v6.6.1
         with:
           context: .
@@ -43,6 +69,7 @@ jobs:
           tags: georgedavisibexlabs/publish-sarif-to-jira:build
 
       - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: aquasecurity/trivy-action@0.24.0
         with:
           scan-type: 'fs'
@@ -52,6 +79,7 @@ jobs:
           github-pat: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload trivy SBOM as a Github artifact
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/upload-artifact@v4.3.6
         with:
           name: trivy-sbom-report
@@ -59,9 +87,11 @@ jobs:
           retention-days: 30
 
       - name: List Docker Containers
+        if: steps.changed-files.outputs.any_changed == 'true'
         run: 'docker ps -a'
 
       - name: List Docker Images
+        if: steps.changed-files.outputs.any_changed == 'true'
         run: 'docker images'
 
       # - name: Run Trivy Image scanner
