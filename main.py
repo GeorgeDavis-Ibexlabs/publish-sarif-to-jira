@@ -122,7 +122,7 @@ def main():
                             issue_type = "Task"
                         )
                 else:
-                    raise Exception("No results found.")
+                    logger.error("[" + sarif_tool_name + "]: No results found.")
                 
             logger.info("Success.")
 
