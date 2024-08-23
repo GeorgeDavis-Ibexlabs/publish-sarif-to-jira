@@ -1,0 +1,85 @@
+# This is the build workflow to help maintain the project
+name: Build CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main", "dev"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# These permissions are needed to interact with GitHub's OIDC Token endpoint.
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+  security-events: write
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs: 
+  iac-scan:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Git Checkout
+        uses: actions/checkout@v4.1.7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6.6.1
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          # sbom: true
+          tags: georgedavisibexlabs/publish-sarif-to-jira:build
+
+      - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: 'fs'
+          format: 'github'
+          output: 'dependency-results.sbom.json'
+          image-ref: '.'
+          github-pat: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload trivy SBOM as a Github artifact
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          name: trivy-sbom-report
+          path: trivy-dependency-results.sbom.json
+          retention-days: 30
+
+      - name: List Docker Containers
+        run: 'docker ps -a'
+
+      - name: List Docker Images
+        run: 'docker images'
+
+      # - name: Run Trivy Image scanner
+      #   uses: aquasecurity/trivy-action@0.24.0
+      #   with:
+      #     scan-type: 'image'
+      #     image-ref: 'georgedavisibexlabs/publish-sarif-to-jira'
+      #     limit-severities-for-sarif: true
+      #     trivy-config: .github/config/trivy-sarif.yaml
+    
+      # - name: Upload Trivy Image scan results
+      #   uses: actions/upload-artifact@v4.3.6
+      #   with:
+      #     name: trivy-image-scan-results
+      #     path: trivy-image-scan-results.sarif
+      #     retention-days: 30
+
+      # - name: Upload Trivy scan results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: 'trivy-image-scan-results.sarif'
