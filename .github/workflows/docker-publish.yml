@@ -55,18 +55,18 @@ jobs:
       - name: Update Docker Hub description
         uses: peter-evans/dockerhub-description@v4.0.0
         with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
-            repository: georgedavisibexlabs/publish-sarif-to-jira
-            short-description: Publish SARIF data to JIRA
-            readme-filepath: ./DOCKER.md
-            enable-url-completion: true
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: georgedavisibexlabs/publish-sarif-to-jira
+          short-description: Publish SARIF data to JIRA
+          readme-filepath: ./DOCKER.md
+          enable-url-completion: true
 
       - name: Run Trivy Image scanner
         uses: aquasecurity/trivy-action@0.24.0
         with:
           scan-type: 'image'
-          image-ref: 'georgedavisibexlabs/publish-sarif-to-jira'
+          image-ref: 'georgedavisibexlabs/publish-sarif-to-jira:main'
           limit-severities-for-sarif: true
           trivy-config: .github/config/trivy-sarif.yaml
     

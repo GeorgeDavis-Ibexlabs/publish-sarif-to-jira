@@ -57,10 +57,14 @@ def main():
 
                 sarif_tool_name, sarif_data = sarifObj.load_sarif_data(sarif_file_path=sarif_file_path)
 
-                logger.info("[" + sarif_tool_name + "]: Total no. of issues found in SARIF report - " + str(sarif_data.get_result_count()))
+                sarif_result_count = sarif_data.get_result_count()
 
-                if sarif_data.get_result_count() > 0:
+                logger.info("[" + sarif_tool_name + "]: Total no. of issues found in SARIF report - " + str(sarif_result_count))
 
+                if sarif_result_count == 0:
+                    logger.error("[" + sarif_tool_name + "]: No results found.")
+
+                else:
                     sarif_findings = sarifObj.build_sarif_findings_dict(
                         sarif_tool_name=sarif_tool_name,
                         sarif_data=sarif_data
@@ -121,8 +125,6 @@ def main():
                             issue_desc = issue_desc,
                             issue_type = "Task"
                         )
-                else:
-                    logger.error("[" + sarif_tool_name + "]: No results found.")
                 
             logger.info("Success.")
 
