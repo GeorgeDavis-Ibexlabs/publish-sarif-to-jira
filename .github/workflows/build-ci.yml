@@ -20,7 +20,7 @@ permissions:
   security-events: write
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs: 
+jobs:
   iac-scan:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -58,6 +58,20 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: docker/setup-buildx-action@v3
 
+      - name: Log in to Docker Hub
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: docker/login-action@v3.3.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        if: steps.changed-files.outputs.any_changed == 'true'
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: georgedavisibexlabs/publish-sarif-to-jira
+
       - name: Build Docker image
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: docker/build-push-action@v6.6.1
@@ -66,16 +80,17 @@ jobs:
           file: Dockerfile
           push: false
           # sbom: true
-          tags: georgedavisibexlabs/publish-sarif-to-jira:build
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: aquasecurity/trivy-action@0.24.0
         with:
-          scan-type: 'fs'
-          format: 'github'
-          output: 'dependency-results.sbom.json'
-          image-ref: '.'
+          scan-type: "fs"
+          format: "github"
+          output: "dependency-results.sbom.json"
+          image-ref: "georgedavisibexlabs/publish-sarif-to-jira:main"
           github-pat: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload trivy SBOM as a Github artifact
@@ -86,30 +101,22 @@ jobs:
           path: trivy-dependency-results.sbom.json
           retention-days: 30
 
-      - name: List Docker Containers
-        if: steps.changed-files.outputs.any_changed == 'true'
-        run: 'docker ps -a'
+      - name: Run Trivy Image scanner
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: "image"
+          image-ref: "georgedavisibexlabs/publish-sarif-to-jira:main"
+          limit-severities-for-sarif: true
+          trivy-config: .github/config/trivy-sarif.yaml
 
-      - name: List Docker Images
-        if: steps.changed-files.outputs.any_changed == 'true'
-        run: 'docker images'
+      - name: Upload Trivy Image scan results
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          name: trivy-image-scan-results
+          path: trivy-image-scan-results.sarif
+          retention-days: 30
 
-      # - name: Run Trivy Image scanner
-      #   uses: aquasecurity/trivy-action@0.24.0
-      #   with:
-      #     scan-type: 'image'
-      #     image-ref: 'georgedavisibexlabs/publish-sarif-to-jira'
-      #     limit-severities-for-sarif: true
-      #     trivy-config: .github/config/trivy-sarif.yaml
-    
-      # - name: Upload Trivy Image scan results
-      #   uses: actions/upload-artifact@v4.3.6
-      #   with:
-      #     name: trivy-image-scan-results
-      #     path: trivy-image-scan-results.sarif
-      #     retention-days: 30
-
-      # - name: Upload Trivy scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: 'trivy-image-scan-results.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-image-scan-results.sarif"
