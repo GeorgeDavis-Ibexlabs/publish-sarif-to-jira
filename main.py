@@ -11,8 +11,19 @@ from atlassian_doc_builder import load_adf, ADFDoc
 from atlassian.adf import AtlassianDocumentFormatBuilder
 from utils.utils import Utils
 
-logging.basicConfig()
-logger = logging.getLogger(__name__)
+# Setting up the logging level from the environment variable `LOGLEVEL`.
+if 'LOG_FILENAME' in environ.keys():
+    logging.basicConfig(
+        filename=environ['LOG_FILENAME'],
+        filemode='a',
+        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+        datefmt='%H:%M:%S'
+    )
+    logger = logging.getLogger(__name__)
+else:
+    logging.basicConfig()
+    logger = logging.getLogger(__name__)
+
 logger.setLevel(environ['LOG_LEVEL'] if 'LOG_LEVEL' in environ.keys() else 'INFO')
 
 def main():
