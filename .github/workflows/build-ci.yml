@@ -29,11 +29,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Git Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.1
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v46.0.5
+        uses: tj-actions/changed-files@v47.0.1
         with:
           files_ignore: |
             .github/**            
@@ -60,7 +60,7 @@ jobs:
 
       - name: Log in to Docker Hub
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: docker/login-action@v3.4.0
+        uses: docker/login-action@v3.6.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
       - name: Extract metadata (tags, labels) for Docker
         if: steps.changed-files.outputs.any_changed == 'true'
         id: meta
-        uses: docker/metadata-action@v5.7.0
+        uses: docker/metadata-action@v5.10.0
         with:
           images: georgedavisibexlabs/publish-sarif-to-jira
 
@@ -85,7 +85,7 @@ jobs:
 
       - name: Run Trivy in GitHub SBOM mode and submit results to Dependency Graph
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: aquasecurity/trivy-action@0.32.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: "fs"
           format: "github"
@@ -94,14 +94,14 @@ jobs:
 
       - name: Upload trivy SBOM as a Github artifact
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: trivy-sbom-report
           path: trivy-dependency-results.sbom.json
           retention-days: 30
 
       - name: Run Trivy Image scanner
-        uses: aquasecurity/trivy-action@0.32.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: "image"
           image-ref: "georgedavisibexlabs/publish-sarif-to-jira:main"
@@ -109,13 +109,13 @@ jobs:
           trivy-config: .github/config/trivy-sarif.yaml
 
       - name: Upload Trivy Image scan results
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: trivy-image-scan-results
           path: trivy-image-scan-results.sarif
           retention-days: 30
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: "trivy-image-scan-results.sarif"
